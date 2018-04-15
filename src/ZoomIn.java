@@ -7,24 +7,26 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JScrollPane;
-import java.awt.BorderLayout;
-import javax.swing.JToolBar;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+import java.awt.BorderLayout;
 import javax.swing.JPanel;
 import javax.swing.JMenuBar;
 import javax.swing.JMenu;
 import javax.swing.JMenuItem;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.awt.event.ActionEvent;
-import javax.swing.JButton;
+import javax.swing.JToolBar;
+import java.awt.GridBagLayout;
+import com.jgoodies.forms.layout.FormLayout;
+import com.jgoodies.forms.layout.ColumnSpec;
+import com.jgoodies.forms.layout.RowSpec;
 
 public class ZoomIn {
 
 	private JFrame frame;
-	private JLabel JLabelPicture;
-	private ImageIcon image;
-	private Image oneImage;
 
 	/**
 	 * Launch the application.
@@ -63,49 +65,75 @@ public class ZoomIn {
 		JToolBar toolBar = new JToolBar();
 		scrollPane.setColumnHeaderView(toolBar);
 		
-		JButton buttonZoomIn = new JButton("");
-		buttonZoomIn.setIcon(new ImageIcon(ZoomIn.class.getResource("/imgResorse/zoom-tool.png")));
-		toolBar.add(buttonZoomIn);
-		
-		JPanel panelImages = new JPanel();
-		scrollPane.setViewportView(panelImages);
+		JPanel panelPictures = new JPanel();
+		scrollPane.setViewportView(panelPictures);
+		panelPictures.setLayout(new FormLayout(new ColumnSpec[] {},
+			new RowSpec[] {}));
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
 		
-		JMenu mnOpen = new JMenu("Open");
-		menuBar.add(mnOpen);
+		JMenu mnMenu = new JMenu("Menu");
+		menuBar.add(mnMenu);
 		
-		JMenuItem mntmFile = new JMenuItem("File");
-		mntmFile.addActionListener(new ActionListener() {
+		JMenu mnOpen = new JMenu("Open");
+		mnMenu.add(mnOpen);
+		
+		JMenuItem mntmImage = new JMenuItem("Image");
+		mnOpen.add(mntmImage);
+		
+		JMenuItem mntmFiles = new JMenuItem("Files");
+		mntmFiles.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
-				panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
-				panelImages.removeAll();
+				//scrollPane.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
+				panelPictures.removeAll();
+				JFileChooser jc = new JFileChooser();
+				jc.setDialogTitle("Pleae select wanted pictures");
+				jc.setMultiSelectionEnabled(true);
+				jc.setFileFilter(new FileNameExtensionFilter(".png","PNG"));
+				if(jc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
+					File[] imgs = jc.getSelectedFiles();
+					for (File img: imgs) {
+						
+						//BufferedImage image = ImageIO.read(picture);
+						//pictures
+						ImageIcon image = new ImageIcon(img.getAbsolutePath());
+						Image scaleImage = image.getImage().getScaledInstance(300, 250, Image.SCALE_DEFAULT);
+						JLabel JLabelPicture = new JLabel(new ImageIcon(scaleImage));//new ImageIcon(picture.getAbsolutePath()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))));
+						//JLabelPicture.setIcon((Icon) scaleImage);
+						panelPictures.add(JLabelPicture);
+					}
+				
+				}
+			}
+		});
+		mnOpen.add(mntmFiles);
+		
+		
+		mntmImage.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				panelPictures.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				panelPictures.removeAll();
 				JFileChooser jc = new JFileChooser();
 				jc.setDialogTitle("Pleae select wanted pictures");
 				jc.setMultiSelectionEnabled(false);
 				jc.setFileFilter(new FileNameExtensionFilter(".png","PNG"));
 				if(jc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
 					File picture = jc.getSelectedFile();
-					image = new ImageIcon(picture.getAbsolutePath());
-					int imageActualHeight = image.getIconHeight();
-					int imageActualWidth = image.getIconWidth();
-					int imageProportion = imageActualWidth/imageActualHeight;
-					int width = panelImages.getWidth()*imageProportion;
-					int height = panelImages.getHeight();
-					JLabelPicture = new JLabel();
-					
-					oneImage = image.getImage().getScaledInstance(int width = panelImages.getWidth()*imageProportion,panelImages.getHeight(), Image.SCALE_DEFAULT);
-					JLabelPicture.setIcon(new ImageIcon(oneImage));// = new JLabel(new ImageIcon(scaleImage));
-					panelImages.add(JLabelPicture);
-					panelImages.revalidate();
-					panelImages.repaint();
+					ImageIcon image = new ImageIcon(picture.getAbsolutePath());
+					int imageHeight = image.getIconHeight();
+					int imageWidth = image.getIconWidth();
+					int imageProportion = imageWidth/imageHeight;
+					Image oneImage = image.getImage().getScaledInstance(panelPictures.getWidth()*imageProportion,panelPictures.getHeight(), Image.SCALE_DEFAULT);
+					JLabel JLabelPicture = new JLabel(new ImageIcon(oneImage));
+					panelPictures.add(JLabelPicture);
+					panelPictures.revalidate();
+					panelPictures.repaint();
 				}
 			}
-			
 		});
-		mnOpen.add(mntmFile);
-	}
-
+		
+		}
+	
 }
