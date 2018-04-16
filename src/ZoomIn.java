@@ -20,9 +20,6 @@ import java.io.File;
 import java.awt.event.ActionEvent;
 import javax.swing.JToolBar;
 import java.awt.GridBagLayout;
-import com.jgoodies.forms.layout.FormLayout;
-import com.jgoodies.forms.layout.ColumnSpec;
-import com.jgoodies.forms.layout.RowSpec;
 
 public class ZoomIn {
 
@@ -67,8 +64,7 @@ public class ZoomIn {
 		
 		JPanel panelPictures = new JPanel();
 		scrollPane.setViewportView(panelPictures);
-		panelPictures.setLayout(new FormLayout(new ColumnSpec[] {},
-			new RowSpec[] {}));
+		panelPictures.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 		
 		JMenuBar menuBar = new JMenuBar();
 		frame.setJMenuBar(menuBar);
