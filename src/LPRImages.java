@@ -42,6 +42,8 @@ import javax.swing.JSeparator;
 import java.awt.SystemColor;
 import javax.swing.JScrollPane;
 import java.awt.Component;
+import java.awt.Scrollbar;
+import java.awt.event.MouseAdapter;
 
 public class LPRImages {
 
@@ -50,13 +52,15 @@ public class LPRImages {
 	private JTable table;
 	private JPanel panelImages;
 	private JLabel JLabelPicture;
-	private Image oneImage;
-	private int imageProportion;
-	private ArrayList<LPRImage> pictures;
-	private LPRImage singleImage;
+	private ArrayList<oneLPRImage> pictures = new ArrayList<oneLPRImage>();
+	private ArrayList<JLabel> JLabelPictures = new ArrayList<JLabel>();
+	private oneLPRImage singleImage;
+	int imageSize;
+	/**
+	 * @wbp.nonvisual location=106,-1
+	 */
+	private final Scrollbar scrollbar = new Scrollbar();
 	
-
-
 	/**
 	 * Launch the application.
 	 */
@@ -130,6 +134,9 @@ public class LPRImages {
 		panelTools.setLayout(new FlowLayout(FlowLayout.LEFT, 5, 5));
 		panelTools.add(comboSign);
 		panelTools.add(rdbtnDetailed);
+		
+		JPanel panel = new JPanel();
+		panelTools.add(panel);
 		panelTools.add(rdbtnSimple);
 		panelTools.add(comboGrade);
 		
@@ -137,11 +144,13 @@ public class LPRImages {
 		toolBar.setForeground(new Color(0, 0, 0));
 		panelTools.add(toolBar);
 		
-		JButton buttonZoomIn = new JButton("");
+		
 		
 		
 		JLabel lblTools = new JLabel("TOOL BAR:");
 		toolBar.add(lblTools);
+		
+		JButton buttonZoomIn = new JButton("");
 		buttonZoomIn.setIcon(new ImageIcon(LPRImages.class.getResource("/imgResorse/zoom-tool.png")));
 		toolBar.add(buttonZoomIn);
 		
@@ -211,6 +220,15 @@ public class LPRImages {
 		panelImages = new JPanel();
 		frame.getContentPane().add(panelImages, BorderLayout.CENTER);
 		
+		Scrollbar scrollbar_2 = new Scrollbar();
+		panelImages.add(scrollbar_2);
+		
+		//panelSize = panelImages.getHeight();
+		
+		Scrollbar scrollbar_1 = new Scrollbar();
+		scrollbar_1.setOrientation(Scrollbar.HORIZONTAL);
+		frame.getContentPane().add(scrollbar_1, BorderLayout.SOUTH);
+		
 		/*JPanel panelOneImage = new JPanel();
 		panelOneImage.setAlignmentX(Component.RIGHT_ALIGNMENT);
 		panelImages.add(panelOneImage);
@@ -228,55 +246,29 @@ public class LPRImages {
 					File[] imgs = jc.getSelectedFiles();
 					for (File img: imgs) {
 						
-						//BufferedImage image = ImageIO.read(picture);
-						//pictures
-						ImageIcon image = new ImageIcon(img.getAbsolutePath());
-						Image scaleImage = image.getImage().getScaledInstance(300, 250, Image.SCALE_DEFAULT);
-						JLabel JLabelPicture = new JLabel(new ImageIcon(scaleImage));//new ImageIcon(picture.getAbsolutePath()).getImage().getScaledInstance(50, 50, Image.SCALE_DEFAULT))));
-						//JLabelPicture.setIcon((Icon) scaleImage);
-						panelImages.add(JLabelPicture);
-						JLabelPicture.addMouseListener(new MouseListener() {
-
+						pictures.add(new oneLPRImage(img));
+						JLabel tempJLabel = new JLabel(pictures.get(pictures.size()-1).ScaleImage(300));
+						
+						tempJLabel.addMouseListener(new MouseAdapter() {
 							@Override
 							public void mouseClicked(MouseEvent e) {
-								// TODO Auto-generated method stub
 								
-								
-								Image scaleImage = image.getImage().getScaledInstance(600,600, Image.SCALE_DEFAULT);
-								JLabel JLabelPicture = new JLabel(new ImageIcon(scaleImage));
-								//panelOneImage.add(JLabelPicture);
-								//panelOneImage.revalidate();
-								//panelOneImage.repaint();
-								
+								panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+								panelImages.removeAll();
+								singleImage = new oneLPRImage(img);
+						
+								JLabelPicture.setIcon(singleImage.ScaleImage(panelImages.getHeight()));// = new JLabel(new ImageIcon(scaleImage));
+								panelImages.add(JLabelPicture);
+								panelImages.revalidate();
+								panelImages.repaint();
 							}
-
-							@Override
-							public void mousePressed(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
-
-							@Override
-							public void mouseReleased(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
-
-							@Override
-							public void mouseEntered(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
-
-							@Override
-							public void mouseExited(MouseEvent e) {
-								// TODO Auto-generated method stub
-								
-							}
-							
 						});
 						
+						
+						JLabelPictures.add(tempJLabel);
+						panelImages.add(tempJLabel);
 					}
+					
 					panelImages.revalidate();
 					panelImages.repaint();
 				}
@@ -296,13 +288,8 @@ public class LPRImages {
 				jc.setMultiSelectionEnabled(false);
 				jc.setFileFilter(new FileNameExtensionFilter(".png","PNG"));
 				if(jc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
-					File picture = jc.getSelectedFile();
-					ImageIcon image = new ImageIcon(picture.getAbsolutePath());
-					int imageHeight = image.getIconHeight();
-					int imageWidth = image.getIconWidth();
-					imageProportion = imageWidth/imageHeight;
-					oneImage = image.getImage().getScaledInstance(panelImages.getWidth()*imageProportion,panelImages.getHeight(), Image.SCALE_DEFAULT);
-					JLabelPicture.setIcon(new ImageIcon(oneImage));// = new JLabel(new ImageIcon(scaleImage));
+					singleImage = new oneLPRImage(jc.getSelectedFile());
+					JLabelPicture.setIcon(singleImage.ScaleImage(panelImages.getHeight()));// = new JLabel(new ImageIcon(scaleImage));
 					panelImages.add(JLabelPicture);
 					panelImages.revalidate();
 					panelImages.repaint();
@@ -310,12 +297,31 @@ public class LPRImages {
 			}
 		});
 		
-		//oneImage.getScaledInstance((int) (panelImages.getWidth()*imageProportion), panelImages.getHeight(), Image.SCALE_DEFAULT);
+	
+		buttonZoomOut.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int actualsize;
+				if ((actualsize = singleImage.getHeight()) > 600) {
+					panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+					panelImages.removeAll();
+					imageSize = singleImage.getHeight();
+					JLabelPicture.setIcon(singleImage.ScaleImage(imageSize-20));// = new JLabel(new ImageIcon(scaleImage));
+					panelImages.add(JLabelPicture);
+					panelImages.revalidate();
+					panelImages.repaint();
+				}
+			}
+		});
 		
 		buttonZoomIn.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-		
-				
+				panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
+				panelImages.removeAll();
+				imageSize = singleImage.getHeight();
+				JLabelPicture.setIcon(singleImage.ScaleImage(imageSize+20));// = new JLabel(new ImageIcon(scaleImage));
+				panelImages.add(JLabelPicture);
+				panelImages.revalidate();
+				panelImages.repaint();
 			}
 		});
 		
