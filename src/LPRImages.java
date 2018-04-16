@@ -20,6 +20,9 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
+
+//import Line2D.Double;
+
 import javax.swing.event.ChangeEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
@@ -105,13 +108,10 @@ public class LPRImages {
 		JMenu mnNewMenu_1 = new JMenu("Open");
 		mnNewMenu.add(mnNewMenu_1);
 		
-		JMenuItem mntmImage = new JMenuItem("Image");
-		
+		JMenuItem mntmImage = new JMenuItem("Image");		
 		mnNewMenu_1.add(mntmImage);
 		
 		JMenuItem mntmFiles = new JMenuItem("Files");
-		
-	
 		mnNewMenu_1.add(mntmFiles);
 		
 		panelTools = new JPanel();
@@ -220,9 +220,6 @@ public class LPRImages {
 		panelImages = new JPanel();
 		frame.getContentPane().add(panelImages, BorderLayout.CENTER);
 		
-		Scrollbar scrollbar_2 = new Scrollbar();
-		panelImages.add(scrollbar_2);
-		
 		//panelSize = panelImages.getHeight();
 		
 		Scrollbar scrollbar_1 = new Scrollbar();
@@ -284,7 +281,7 @@ public class LPRImages {
 				panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 				panelImages.removeAll();
 				JFileChooser jc = new JFileChooser();
-				jc.setDialogTitle("Pleae select wanted pictures");
+				jc.setDialogTitle("Pleae select wanted picture");
 				jc.setMultiSelectionEnabled(false);
 				jc.setFileFilter(new FileNameExtensionFilter(".png","PNG"));
 				if(jc.showOpenDialog(null)==JFileChooser.APPROVE_OPTION) {
@@ -300,8 +297,8 @@ public class LPRImages {
 	
 		buttonZoomOut.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				int actualsize;
-				if ((actualsize = singleImage.getHeight()) > 600) {
+
+				if (singleImage.getHeight() > 600) {
 					panelImages.setLayout(new FlowLayout(FlowLayout.CENTER, 5, 5));
 					panelImages.removeAll();
 					imageSize = singleImage.getHeight();
@@ -325,6 +322,22 @@ public class LPRImages {
 			}
 		});
 		
+		/*buttonLine.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Double line = new Line2D.Double(100, 100, 200, 200);
+	            prevPoint = new Point();
+	            newPoint = new Point();
+				JLabelPicture.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+	                    prevPoint = e.getPoint();
+	                    System.out.println("Prev Point=" + prevPoint.toString());
+	                    repaint();
+	                }
+				});
+				
+			}
+		});*/
 	
 	}
 }
