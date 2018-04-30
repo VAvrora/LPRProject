@@ -71,7 +71,6 @@ public class LPRStart
 	private ArrayList<oneLPRImage> pictures = new ArrayList<oneLPRImage>();
 	private ArrayList<JLabel> JLabelPictures = new ArrayList<JLabel>();
 	private oneLPRImage singleImage;
-	//private oneLPRImage BigsingleImage;
 	int imageSize;
 	public Point prevPoint;
 	
